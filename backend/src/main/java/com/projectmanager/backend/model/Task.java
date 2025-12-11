@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.UUID;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -30,11 +31,11 @@ public class Task {
 
     @NonNull
     @Column(nullable = false)
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     @Column(columnDefinition = "boolean default false")
     @Builder.Default
-    private Boolean completed = false;
+    private boolean completed = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
