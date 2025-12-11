@@ -1,0 +1,19 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Demo videos (if large)
+*.mp4
+*.mov
+
+# Environment files with secrets
+.env.local
