@@ -49,6 +49,9 @@ const ProjectDetails = () => {
             setNewTask({ title: '', description: '', dueDate: '' });
             setShowForm(false);
             setEditingTaskId(null); 
+            
+            fetchData(); 
+            
         } catch (error) {
             const message = error.response?.data?.message || 
                             error.response?.data?.dueDate || 
