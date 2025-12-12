@@ -15,6 +15,6 @@ public class TaskRequest {
     @FutureOrPresent(message = "Due date cannot be in the past")
     private LocalDate dueDate;
 
-    // Optional: Only used during updates, ignored during creation if null
+    // Only used during updates
     private Boolean isCompleted;
 }

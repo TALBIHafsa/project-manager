@@ -13,7 +13,6 @@ public class TaskMapper {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setDueDate(request.getDueDate());
-        // Default to false for new tasks, or use request value if provided
         task.setCompleted(request.getIsCompleted() != null && request.getIsCompleted());
         return task;
     }

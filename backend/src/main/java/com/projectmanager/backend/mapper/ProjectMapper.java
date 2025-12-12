@@ -17,7 +17,7 @@ public class ProjectMapper {
     }
 
     public ProjectResponse toResponse(Project project) {
-        // Calculate progress here to keep the Service clean
+        // progress calculation
         List<Task> tasks = project.getTasks();
         int total = (tasks == null) ? 0 : tasks.size();
         int completed = (tasks == null) ? 0 : (int) tasks.stream().filter(Task::isCompleted).count();
