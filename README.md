@@ -6,7 +6,7 @@ A robust Full-Stack application for managing projects and tasks, built with **Sp
 
 ## 📹 Demo Video
 
-**[https://drive.google.com/file/d/16Lr5XB5Hbkgojx7E4ifmzTTaovAM9gaT/view?usp=sharing]**
+**https://drive.google.com/file/d/16Lr5XB5Hbkgojx7E4ifmzTTaovAM9gaT/view?usp=sharing**
 _(Please watch the video for a 2-minute walkthrough of the features and code structure)_
 
 ---
