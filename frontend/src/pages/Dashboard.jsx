@@ -8,13 +8,20 @@ const Dashboard = () => {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     
+    const [page, setPage] = useState(0); 
+    const [totalPages, setTotalPages] = useState(0); 
+    const pageSize = 6;
+
     const [showForm, setShowForm] = useState(false);
     const [newProject, setNewProject] = useState({ title: '', description: '' });
 
     const fetchProjects = async () => {
+        setLoading(true);
         try {
-            const response = await api.get(`/projects?search=${search}&limit=100`); 
+            const response = await api.get(`/projects?search=${search}&page=${page}&limit=${pageSize}`);
+            
             setProjects(response.data.content || []); 
+            setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Failed to fetch projects", error);
         } finally {
@@ -24,7 +31,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchProjects();
-    }, [search]);
+    }, [search, page]);
 
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -32,7 +39,7 @@ const Dashboard = () => {
             await api.post('/projects', newProject);
             setNewProject({ title: '', description: '' });
             setShowForm(false);
-            fetchProjects();
+            fetchProjects(); 
         } catch (error) {
             alert("Failed to create project");
         }
@@ -42,10 +49,15 @@ const Dashboard = () => {
         if (!window.confirm("Are you sure you want to delete this project?")) return;
         try {
             await api.delete(`/projects/${id}`);
-            fetchProjects(); // Refresh list
+            fetchProjects(); 
         } catch (error) {
             alert("Failed to delete project");
         }
+    };
+
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+        setPage(0); 
     };
 
     return (
@@ -53,7 +65,7 @@ const Dashboard = () => {
             <Navbar />
 
             <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                {/* Header Section: Title + Search + Create Button */}
+                {/* Header Section */}
                 <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <h1 className="text-2xl font-bold text-gray-900">My Projects</h1>
                     
@@ -63,7 +75,7 @@ const Dashboard = () => {
                             placeholder="Search projects..."
                             className="rounded border border-gray-300 px-4 py-2"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={handleSearchChange} 
                         />
                         <button
                             onClick={() => setShowForm(!showForm)}
@@ -76,9 +88,8 @@ const Dashboard = () => {
 
                 {/* Inline Create Form */}
                 {showForm && (
-                    <div className="mb-8 rounded-lg bg-white p-6 shadow animate-fade-in-down">
-                        <h2 className="mb-4 text-lg font-bold">Create New Project</h2>
-                        <form onSubmit={handleCreate} className="space-y-4">
+                    <div className="mb-8 rounded-lg bg-white p-6 shadow">
+                         <form onSubmit={handleCreate} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Title</label>
                                 <input
@@ -99,19 +110,8 @@ const Dashboard = () => {
                                 />
                             </div>
                             <div className="flex justify-end gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowForm(false)}
-                                    className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                                >
-                                    Save Project
-                                </button>
+                                <button type="button" onClick={() => setShowForm(false)} className="rounded bg-gray-200 px-4 py-2">Cancel</button>
+                                <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-white">Save</button>
                             </div>
                         </form>
                     </div>
@@ -122,18 +122,43 @@ const Dashboard = () => {
                     <div className="text-center text-gray-500">Loading...</div>
                 ) : projects.length === 0 ? (
                     <div className="rounded-lg bg-white p-12 text-center shadow">
-                        <p className="text-gray-500">No projects found. Create one to get started!</p>
+                        <p className="text-gray-500">No projects found.</p>
                     </div>
                 ) : (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {projects.map((project) => (
-                            <ProjectCard 
-                                key={project.id} 
-                                project={project} 
-                                onDelete={handleDelete} 
-                            />
-                        ))}
-                    </div>
+                    <>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {projects.map((project) => (
+                                <ProjectCard 
+                                    key={project.id} 
+                                    project={project} 
+                                    onDelete={handleDelete} 
+                                />
+                            ))}
+                        </div>
+
+                        {/* --- PAGINATION CONTROLS --- */}
+                        <div className="mt-8 flex items-center justify-center gap-4">
+                            <button
+                                onClick={() => setPage(p => Math.max(0, p - 1))}
+                                disabled={page === 0}
+                                className={`rounded px-4 py-2 font-bold ${page === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 shadow hover:bg-gray-50'}`}
+                            >
+                                Previous
+                            </button>
+                            
+                            <span className="text-sm font-medium text-gray-600">
+                                Page {page + 1} of {totalPages}
+                            </span>
+
+                            <button
+                                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                                disabled={page === totalPages - 1 || totalPages === 0}
+                                className={`rounded px-4 py-2 font-bold ${page === totalPages - 1 || totalPages === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 shadow hover:bg-gray-50'}`}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </>
                 )}
             </main>
         </div>
