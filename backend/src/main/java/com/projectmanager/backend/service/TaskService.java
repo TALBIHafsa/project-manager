@@ -87,6 +87,22 @@ public class TaskService {
         log.info("Task deleted. ID: {}, User: {}", taskId, userEmail);
     }
 
+    @Transactional
+    public TaskResponse markTaskAsCompleted(UUID taskId, String userEmail) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        validateTaskOwnership(task, userEmail);
+
+        task.setCompleted(true);
+
+        Task updatedTask = taskRepository.save(task);
+
+        log.info("Task marked as completed. ID: {}, User: {}", taskId, userEmail);
+
+        return taskMapper.toResponse(updatedTask);
+    }
+
     private void validateTaskOwnership(Task task, String userEmail) {
         if (!task.getProject().getUser().getEmail().equals(userEmail)) {
             throw new ResourceNotFoundException("Task not found");
@@ -98,4 +114,5 @@ public class TaskService {
             throw new ResourceNotFoundException("Project not found");
         }
     }
+
 }

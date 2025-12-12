@@ -1,9 +1,8 @@
 package com.projectmanager.backend.service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +17,9 @@ import com.projectmanager.backend.repository.ProjectRepository;
 import com.projectmanager.backend.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +43,14 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectResponse> getUserProjects(String userEmail) {
-        return projectRepository.findByUserEmail(userEmail).stream()
-                .map(projectMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<ProjectResponse> getUserProjects(String userEmail, String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        if (search == null || search.trim().isEmpty()) {
+            return projectRepository.findByUserEmail(userEmail, pageable)
+                    .map(projectMapper::toResponse);
+        }
+        return projectRepository.findByUserEmailAndTitleContainingIgnoreCase(userEmail, search, pageable)
+                .map(projectMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
