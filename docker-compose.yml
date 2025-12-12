@@ -10,16 +10,16 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: project_manager
     ports:
-      - "3307:3306" # Maps localhost:3307 to container:3306 (avoids conflict with local MySQL)
+      - "3307:3306" 
     volumes:
       - db_data:/var/lib/mysql
 
-  # 2. Database Viewer (Optional but helpful for Demo)
+  # 2. Database Viewer 
   adminer:
     image: adminer
     restart: always
     ports:
-      - "8081:8080" # Access at http://localhost:8081
+      - "8081:8080"
     environment:
       ADMINER_DEFAULT_SERVER: mysqldb
 
