@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
             const response = await api.post('/auth/login', { email, password });
             const { accessToken, ...userData } = response.data;
 
-            // Save to Local Storage
             localStorage.setItem('token', accessToken);
             localStorage.setItem('user', JSON.stringify(userData));
             
@@ -37,8 +36,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (email, password) => {
         await api.post('/auth/register', { email, password });
-        // Automatically login after register? Or redirect to login? 
-        // For simplicity, let's just return true so they can login manually.
+        
         return true;
     };
 

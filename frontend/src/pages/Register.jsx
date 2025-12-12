@@ -14,7 +14,7 @@ const Register = () => {
         setError('');
         try {
             await register(email, password);
-            navigate('/login'); // Redirect to login after successful registration
+            navigate('/login'); // Redirect to login on success
         } catch (err) {
             setError('Registration failed. Email might be taken.');
         }
