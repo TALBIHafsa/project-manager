@@ -103,6 +103,20 @@ public class TaskService {
         return taskMapper.toResponse(updatedTask);
     }
 
+    @Transactional
+    public TaskResponse markTaskAsIncomplete(UUID taskId, String userEmail) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        validateTaskOwnership(task, userEmail);
+
+        task.setCompleted(false); // Set to FALSE
+
+        Task updatedTask = taskRepository.save(task);
+        log.info("Task marked as incomplete. ID: {}, User: {}", taskId, userEmail);
+        return taskMapper.toResponse(updatedTask);
+    }
+
     private void validateTaskOwnership(Task task, String userEmail) {
         if (!task.getProject().getUser().getEmail().equals(userEmail)) {
             throw new ResourceNotFoundException("Task not found");

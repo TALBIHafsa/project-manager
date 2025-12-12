@@ -11,7 +11,7 @@ const ProjectCard = ({ project, onDelete }) => {
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
                         {project.title}
                     </h3>
-                    {/* Delete Button (Trash Icon) */}
+                    {/* Delete Button */}
                     <button 
                         onClick={(e) => {
                             e.preventDefault(); // Prevent navigating when clicking delete

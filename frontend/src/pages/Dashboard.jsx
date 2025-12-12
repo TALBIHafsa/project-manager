@@ -8,16 +8,12 @@ const Dashboard = () => {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     
-    // New Project State
     const [showForm, setShowForm] = useState(false);
     const [newProject, setNewProject] = useState({ title: '', description: '' });
 
-    // 1. Fetch Projects (Logic for Search Bonus)
     const fetchProjects = async () => {
         try {
-            // Passing search query to backend
             const response = await api.get(`/projects?search=${search}&limit=100`); 
-            // Note: response.data.content is used because your backend returns a Page<> object
             setProjects(response.data.content || []); 
         } catch (error) {
             console.error("Failed to fetch projects", error);
@@ -26,25 +22,22 @@ const Dashboard = () => {
         }
     };
 
-    // Reload when search changes (Debouncing could be added here for bonus points)
     useEffect(() => {
         fetchProjects();
     }, [search]);
 
-    // 2. Create Project
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
             await api.post('/projects', newProject);
             setNewProject({ title: '', description: '' });
             setShowForm(false);
-            fetchProjects(); // Refresh list
+            fetchProjects();
         } catch (error) {
             alert("Failed to create project");
         }
     };
 
-    // 3. Delete Project
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this project?")) return;
         try {

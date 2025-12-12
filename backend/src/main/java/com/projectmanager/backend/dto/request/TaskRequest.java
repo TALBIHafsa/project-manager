@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import lombok.Data;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 public class TaskRequest {
@@ -12,6 +13,7 @@ public class TaskRequest {
     @NotBlank(message = "Task description is required")
     private String description;
 
+    @NotNull(message = "Due date is required")
     @FutureOrPresent(message = "Due date cannot be in the past")
     private LocalDate dueDate;
 

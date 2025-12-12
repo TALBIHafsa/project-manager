@@ -70,6 +70,14 @@ public class TaskController {
         return ResponseEntity.ok(taskService.markTaskAsCompleted(taskId, email));
     }
 
+    @PatchMapping("/tasks/{taskId}/incomplete")
+    public ResponseEntity<TaskResponse> markTaskIncomplete(
+            @PathVariable UUID taskId,
+            Authentication authentication) {
+        String email = getUserEmail(authentication);
+        return ResponseEntity.ok(taskService.markTaskAsIncomplete(taskId, email));
+    }
+
     private String getUserEmail(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return userDetails.getUsername();

@@ -4,7 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
-import Dashboard from './pages/Dashboard'; // Import the real file
+import Dashboard from './pages/Dashboard';
+import ProjectDetails from './pages/ProjectDetails';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           
           <Route element={<PrivateRoute />}>
              <Route path="/dashboard" element={<Dashboard />} />
+             <Route path="/projects/:id" element={<ProjectDetails />} />
              <Route path="/" element={<Navigate to="/dashboard" />} />
           </Route>
         </Routes>
